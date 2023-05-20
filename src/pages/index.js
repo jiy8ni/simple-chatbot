@@ -2,6 +2,18 @@ import { Chat } from "@/components/Chat";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import { db } from "@/firebase";
+import {
+  collection,
+  query,
+  doc,
+  getDoc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  orderBy,
+  serverTimestamp,
+} from "firebase/firestore";
+
 
 export default function Home() {
   /*
@@ -37,16 +49,14 @@ export default function Home() {
     // ChatInput.js 26번째 줄 참고
 
     // Firebase에 대화 메시지 추가
-    try {
-      await db.collection("chatMessages").add({
+    const messageRef = collection(db, "chatMessages");
+      await addDoc(messageRef, {
         role: message.role,
         content: message.content,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        timestamp: serverTimestamp()
       });
-    } catch (error) {
-      console.error("Error adding message to Firebase:", error);
-    }
-
+    
+    
 
     const updatedMessages = [...messages, message];
     // console.log(updatedMessages);
