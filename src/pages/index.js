@@ -1,6 +1,7 @@
 import { Chat } from "@/components/Chat";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
+import { db } from "@/firebase";
 
 export default function Home() {
   /*
@@ -34,6 +35,19 @@ export default function Home() {
     // message 를 받아 메시지 목록에 추가
     // message 형태 = { role: "user", content: string }
     // ChatInput.js 26번째 줄 참고
+
+    // Firebase에 대화 메시지 추가
+    try {
+      await db.collection("chatMessages").add({
+        role: message.role,
+        content: message.content,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (error) {
+      console.error("Error adding message to Firebase:", error);
+    }
+
+
     const updatedMessages = [...messages, message];
     // console.log(updatedMessages);
     // console.log(updatedMessages.slice(-6));
@@ -80,7 +94,7 @@ export default function Home() {
     setMessages([
       {
         role: "assistant",
-        content: "안녕? 나는 엘리엇이야. 오늘은 무슨 일이 있었니?",
+        content: "안녕하세요, 최적 사회탐구 연구실입니다 :) 무엇을 도와드릴까요?",
       },
     ]);
   };
@@ -95,11 +109,13 @@ export default function Home() {
     handleReset();
   }, []);
 
+
+
   return (
     <>
       <Head>
-        <title>A Simple Chatbot</title>
-        <meta name="description" content="A Simple Chatbot" />
+        <title>강의 상담 챗봇</title>
+        <meta name="description" content="Consulting Chatbot" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
